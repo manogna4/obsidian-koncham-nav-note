@@ -75,16 +75,16 @@ a block (in this plugin's context, obsidian's) is defined as a bunch of contiguo
 +-- every tag has its own tokens. figure out how to navigate between tabs
 
 
-#curr show tokens
-+-- blank line and paragraph have undefined and null tokens
---- +-- the notification doesn't display them properly. use an alternate
-+-- using notification at present. problems:
---- +-- tokens can't be copied
---- +-- too obtrusive
-+-- figure out a better method
---- ?-- status bar
---- +-- modal
---- +-- pop-up like over files
+#curr show tokens\
++-- blank line and paragraph have undefined and null tokens\
+--- +-- the notification doesn't display them properly. use an alternate\
++-- using notification at present. problems:\
+--- +-- tokens can't be copied\
+--- +-- too obtrusive\
++-- figure out a better method\
+--- ?-- status bar\
+--- +-- modal\
+--- +-- pop-up like over files\
 
 ### todo (will do)
 
