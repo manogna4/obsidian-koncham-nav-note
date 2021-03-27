@@ -1,0 +1,10 @@
+{
+	"id": "obsidian-koncham-nav-note",
+	"name": "koncham-nav-note",
+	"version": "0.0.1",
+	"minAppVersion": "0.11.10",
+	"description": "easily navigate within a note",
+	"author": "mano",
+	"authorUrl": "https://manogna4.github.io",
+	"isDesktopOnly": true
+}
