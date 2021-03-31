@@ -35,16 +35,33 @@ export default class MyPlugin extends Plugin {
 		});
 
 		this.addCommand({
+			id: 'flash-line',
+			name: 'flash line',
+			callback: () => this.flashLine(),
+		});
+
+		this.addCommand({
 			id: 'goto-block-prev',
 			name: 'goto block: prev',
 			callback: () => this.gotoBlockPrev(),
-			// callback: () => this.gotoBlock(-1),
 		});
 
 		this.addCommand({
 			id: 'goto-block-next',
 			name: 'goto block: next',
-			callback: () => this.gotoBlock(1),
+			callback: () => this.gotoBlockNext(),
+		});
+
+		this.addCommand({
+			id: 'goto-section-prev',
+			name: 'goto section: prev',
+			callback: () => this.gotoSection(-1),
+		});
+
+		this.addCommand({
+			id: 'goto-section-next',
+			name: 'goto section: next',
+			callback: () => this.gotoSection(1),
 		});
 	}
 
@@ -59,23 +76,45 @@ export default class MyPlugin extends Plugin {
 		}
 	}
 
+	// flashes the current line to highlight
+	flashLine() {
+		const view = this.app.workspace.activeLeaf.view;
+		if (view instanceof MarkdownView) {
+			const cm = view.sourceMode.cmEditor;
+			let cursorLine = cm.getCursor().line;
+			cm.addLineClass(cursorLine, "wrap", plugin_name + "-flash")
+			setTimeout(() => {
+				cm.removeLineClass(cursorLine, "wrap", plugin_name + "-flash")
+			}, 100);
+		}
+	}
 
-	// gotoBlock is configured only for [n_item = +1 or -1]
-	// it may be extended later
-	gotoBlock(n_item:number) {
+	// flashes the current line to highlight an error
+	errorLine() {
+		const view = this.app.workspace.activeLeaf.view;
+		if (view instanceof MarkdownView) {
+			const cm = view.sourceMode.cmEditor;
+			let cursorLine = cm.getCursor().line;
+			cm.addLineClass(cursorLine, "wrap", plugin_name + "-error")
+			setTimeout(() => {
+				cm.removeLineClass(cursorLine, "wrap", plugin_name + "-error")
+			}, 100);
+		}
+	}
+
+
+	gotoBlockNext() {
 		const view = this.app.workspace.activeLeaf.view;
 		if (view instanceof MarkdownView) {
 			const cm = view.sourceMode.cmEditor;
 			let cursorHead = cm.getCursor();
 			let line_base = cursorHead.line;
-			let line_limit = this.getLineLimit(n_item);
+			let line_limit = cm.lastLine();
 			let result = false;
-			// checking
 			let is_blank;
 			if (cm.getTokenTypeAt(cursorHead) === undefined) {is_blank = true} else {is_blank = false}
-			if (n_item>0){cursorHead.line+=1;}else{cursorHead.line-=1;}
-			console.log('start')
-			while (!result && this.gotoCheckLimit(cursorHead.line, n_item, line_limit)) {
+			cursorHead.line+=1;
+			while (!result && cursorHead.line <= line_limit) {
 				let token = cm.getTokenTypeAt(cursorHead)
 				if (is_blank == true && token !== undefined) {
 					result = true;
@@ -83,18 +122,18 @@ export default class MyPlugin extends Plugin {
 					result = true;
 				} else if (token === undefined){
 					is_blank = true;
-					cursorHead.line += n_item;
+					cursorHead.line += 1;
 				} else {
 					is_blank = false;
-					cursorHead.line += n_item;
+					cursorHead.line += 1;
 				}
-				// console.log(cursorHead.line, line_limit)
 			}
 			if (result){
 				cm.setCursor(cursorHead);
+				this.flashLine();
 			} else {
-				new Notice(plugin_name + ': not found');
 				cursorHead.line = line_base;
+				this.errorLine();
 			}
 		}
 	}
@@ -112,7 +151,7 @@ export default class MyPlugin extends Plugin {
 				let token1 = cm.getTokenTypeAt(cursorHead)
 				cursorHead.line -= 1
 				let token2 = cm.getTokenTypeAt(cursorHead)
-				console.log(token1, token2);
+				// console.log(token1, token2);
 				if (token1 !== undefined && token2 === undefined){
 					result = true;
 				} else if (cursorHead.line < line_limit) {
@@ -122,9 +161,10 @@ export default class MyPlugin extends Plugin {
 			if (result) {
 				cursorHead.line += 1
 				cm.setCursor(cursorHead);
+				this.flashLine()
 			} else {
-				new Notice(plugin_name + ': not found');
 				cursorHead.line = line_base;
+				this.errorLine();
 			}
 		}
 	}
@@ -148,9 +188,42 @@ export default class MyPlugin extends Plugin {
 			}
 			if (var_token == var_token_base) {
 				cm.setCursor(cursorHead);
+				this.flashLine();
 			} else {
-				new Notice(plugin_name + ': not found');
 				cursorHead.line = line_base;
+				this.errorLine();
+			}
+		}
+	}
+
+
+	// gotoSection is configured only for [n_item = +1 or -1]
+	// it may be extended later
+	gotoSection(n_item: number) {
+		const view = this.app.workspace.activeLeaf.view;
+		if (view instanceof MarkdownView) {
+			const cm = view.sourceMode.cmEditor;
+			let cursorHead = cm.getCursor();
+			let line_base = cursorHead.line;
+			let line_limit
+			if (n_item > 0) { line_limit = cm.lastLine(); } else { line_limit = cm.firstLine(); };
+			let result = false;
+			let var_token
+			while (this.gotoCheckLimit(cursorHead.line, n_item, line_limit) && !result) {
+				cursorHead.line += n_item;
+				var_token = cm.getTokenTypeAt(cursorHead);
+				if (var_token !== undefined && var_token !== null){
+					if (var_token.includes('header')){
+						result = true;
+					}
+				}
+			}
+			if (result) {
+				cm.setCursor(cursorHead);
+				this.flashLine();
+			} else {
+				cursorHead.line = line_base;
+				this.errorLine();
 			}
 		}
 	}

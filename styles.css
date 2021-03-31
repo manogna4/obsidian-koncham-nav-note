@@ -1,3 +1,14 @@
 .zz-placeholder {
     color: red;
 }
+
+.koncham-nav-note-flash{
+    color: black;
+    background-color: grey !important;
+}
+
+
+.koncham-nav-note-error{
+    color: black;
+    background-color: red !important;
+}
