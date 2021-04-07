@@ -17,7 +17,7 @@ Also, I wish I could look at the plugins other people are working on, but aren't
 
 To install the plugin, you will need to:
 1. create a folder called `obsidian-koncham-nav-note` in `\.obsidian\plugins\` in your vault
-2. copy `main.js` and `manifest.json` into the folder from this github repo
+2. copy `main.js`, `manifest.json` and `styles.css` into the folder from this github repo
 
 	your folder structure should look like this:
 
