@@ -4,6 +4,7 @@ This plugin enables efficient navigation of a note using commands such 
 
 + `goto-block-next` and `goto-block-prev`
 + `goto-sibling-next` and `goto-sibling-prev`
++ `goto-section-next` and `goto-section-prev`
 
 
 ## under construction
