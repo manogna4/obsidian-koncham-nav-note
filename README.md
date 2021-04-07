@@ -7,7 +7,7 @@ This plugin enables efficient navigation of a note using commands such 
 + `goto-section-next` and `goto-section-prev`
 
 
-![video](video.mp4)
+![demo](koncham-nav-note.gif)
 
 ## under construction
 
