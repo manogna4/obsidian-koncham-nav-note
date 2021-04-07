@@ -7,6 +7,8 @@ This plugin enables efficient navigation of a note using commands such 
 + `goto-section-next` and `goto-section-prev`
 
 
+![video](video.mp4)
+
 ## under construction
 
 This plugin is a work in progress. I am putting it up only here (for now) because some features are ready and it might be useful to some people. When it's ready, I will apply to include it in the community plugs.
