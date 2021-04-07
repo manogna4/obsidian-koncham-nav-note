@@ -27,6 +27,7 @@ To install the plugin, you will need to:
 			|___+ obsidian-koncham-nav-note
 				|___ main.js
 				|___ manifest.json
+				|___ styles.css
 	```
 3. reload the app
 4. enable `koncham-nav-note` in [settings > community settings]
