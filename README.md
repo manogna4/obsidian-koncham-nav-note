@@ -59,20 +59,31 @@ I use:
 
 ⚠You will need to use obsidian 0.11.10 or higher if you want to use `ctrl + ↑/↓`. If you don't have access to it yet, you will need to install the [koncham-undefault-hotkeys](https://github.com/manogna4/obsidian-koncham-undefault-hotkeys) plugin to free those hotkeys from their default functions.
 
-## roadmap
+## done
 
-### done
+#done flash line that the cursor has moved to
 
-#done goto-block-[next/prev]
-a block (in this plugin's context, obsidian's) is defined as a bunch of contiguous lines with no empty line in between.
-`goto-block-prev` will take the cursor to the first line of the current block. If the cursor is already on the first line, it will take the cursor to the first line of the previous block
-`goto-block-next` will take the cursor to the first line of the next block
+#done goto section-[next/previous]\
++-- goto the first heading before the current line\
++-- goto next heading after the current line\
 
-###  curr (work in progress)
+#done flash on not-found\
++-- replace the notification showing an error\
++-- flash in alternate colour when navigation target is not found\
 
-#curr goto sibling
-+-- line-1 and line-2 in a list at `indent-level=1` don't have the same tokens
-+-- every tag has its own tokens. figure out how to navigate between tabs
+#done flash active line\
+have a hotkey that flashes the line that is active\
+
+#done goto-block-[next/prev]\
+a block (in this plugin's context, obsidian's) is defined as a bunch of contiguous lines with no empty line in between.\
+`goto-block-prev` will take the cursor to the first line of the current block. If the cursor is already on the first line, it will take the cursor to the first line of the previous block\
+`goto-block-next` will take the cursor to the first line of the next block\
+
+##  wip
+
+#curr goto sibling\
++-- line-1 and line-2 in a list at `indent-level=1` don't have the same tokens\
++-- every tag has its own tokens. figure out how to navigate between tabs\
 
 
 #curr show tokens\
@@ -86,17 +97,25 @@ a block (in this plugin's context, obsidian's) is defined as a bunch of contiguo
 --- +-- modal\
 --- +-- pop-up like over files\
 
-### todo (will do)
+## inbox
 
-#todo flash line that the cursor has moved to
-+-- needs to have an option in setting with `off` as the default
+#todo select block
+?-- take cursor to the beginning or retain position
 
-#todo goto heading
-goto the first heading before the current line
+#todo swap block up/down\
+exchange places with neighbours\
+?-- empty lines treatment\
+--- --- treat empty line below block as part of block while moving, copying\
+--- --- +-- insert empty line for the last block of the note if it doesn't exist\
 
-#todo goto block's end
-?-- start of the last line in the block
-?-- end of the last line in the block
+#todo yaml header commands\
++-- fold and unfold from anywhere in the note\
++-- hide to get move vertical space\
++-- display data in a modal\
+
+#todo goto block end\
+?-- start of the last line in the block\
+?-- end of the last line in the block\
 
 #todo goto child
 
@@ -104,31 +123,40 @@ goto the first heading before the current line
 
 #todo goto ancestor
 
-#todo goto cousin
-+-- figure out the best way to determine cousins
-+-- figure out what elements can be considered cousins
+#todo goto cousin\
++-- figure out the best way to determine cousins\
++-- figure out what elements can be considered cousins\
 
 #todo recursively broader selection
 recursively select higher contexts like line>paragraph>h3-h2-h1 
+try `cm.findWordAt`
 ?-- what about lists
 
-### mull (considering doing)
+#todo sort blocks\
+alphabetically (asc/desc) based on first line\
++-- have an option to ignore tags ( may be only named tags settings (for special tags))\
 
-#mull implicit start-of-line
-movement between lines works best when the cursor is at the start of the line
-?-- have an option to force this (best solution will take time to understand how to)
-?-- force this before every goto (I'll go with this now)
-?-- go by character intead of by line (will be much slower)
---- +-- figure out whether the lack of speed is significant enough to matter
---- +-- go by line, if token is found, go by character
-
-
-#mull select commands
-`select` commands corresponding to the `goto` commands where relevant
-+-- figure out the best way to do this
-+-- figure out behavior
+#todo select commands\
+`select` commands corresponding to the `goto` commands where relevant\
++-- figure out the best way to do this\
++-- figure out behavior\
 
 
-#mull move commands
-`move` commands corresponding to the `goto` commands where relevant
-+-- move entire selection upwards downwards
+#todo move: sendto and taketo commands\
+`move` commands corresponding to the `goto` commands where relevant\
++-- move entire selection upwards downwards\
++-- taketo is different than moveto, because in moveto the cursor position won't shift; while in taketo, it does\
+
+
+#mull implicit start-of-line\
+movement between lines works best when the cursor is at the start of the line\
+?-- have an option to force this (best solution will take time to understand how to)\
+?-- force this before every goto (I'll go with this now)\
+?-- go by character intead of by line (will be much slower)\
+--- +-- figure out whether the lack of speed is significant enough to matter\
+--- +-- go by line, if token is found, go by character\
+
+#todo flash colur settings\
+have settings to change flash colours:\
++-- active line\
++-- not-found\
