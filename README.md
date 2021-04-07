@@ -59,7 +59,9 @@ I use:
 
 ⚠You will need to use obsidian 0.11.10 or higher if you want to use `ctrl + ↑/↓`. If you don't have access to it yet, you will need to install the [koncham-undefault-hotkeys](https://github.com/manogna4/obsidian-koncham-undefault-hotkeys) plugin to free those hotkeys from their default functions.
 
-## done
+## roadmap
+
+### done
 
 #done flash line that the cursor has moved to
 
@@ -79,7 +81,7 @@ a block (in this plugin's context, obsidian's) is defined as a bunch of contiguo
 `goto-block-prev` will take the cursor to the first line of the current block. If the cursor is already on the first line, it will take the cursor to the first line of the previous block\
 `goto-block-next` will take the cursor to the first line of the next block\
 
-##  wip
+###  wip
 
 #curr goto sibling\
 +-- line-1 and line-2 in a list at `indent-level=1` don't have the same tokens\
@@ -97,7 +99,7 @@ a block (in this plugin's context, obsidian's) is defined as a bunch of contiguo
 --- +-- modal\
 --- +-- pop-up like over files\
 
-## inbox
+### inbox
 
 #todo select block
 ?-- take cursor to the beginning or retain position
