@@ -63,6 +63,56 @@ export default class MyPlugin extends Plugin {
 			name: 'goto section: next',
 			callback: () => this.gotoSection(1),
 		});
+		
+		this.addCommand({
+			id: 'show-family',
+			name: 'show family',
+			callback: () => this.showFamily(),
+		});
+
+		this.addCommand({
+			id: 'goto-cousin-next',
+			name: 'goto cousin: next',
+			callback: () => this.gotoCousin(1),
+		});
+
+		this.addCommand({
+			id: 'goto-cousin-prev',
+			name: 'goto cousin: prev',
+			callback: () => this.gotoCousin(-1),
+		});
+	}
+
+	showFamily() {
+		let family = this.getFamily();
+		new Notice(family);
+		console.log(family);
+	}
+
+	private getFamily() {
+		const view = this.app.workspace.activeLeaf.view;
+		if (view instanceof MarkdownView) {
+			const cm = view.sourceMode.cmEditor;
+			let cursorHead = cm.getCursor();
+			let var_token_base = cm.getTokenTypeAt(cursorHead);
+			let family;
+			if (var_token_base === undefined) {
+				family = '--blank'
+			} else if (var_token_base === null) {
+				family = '--paragraph'
+			} else if (var_token_base.includes('hashtag')) {
+				family = 'hashtag'
+			} else if (var_token_base.includes('header')) {
+				family = 'header'
+			} else if (var_token_base.includes('list')) {
+				family = 'list'
+			} else if (var_token_base.includes('quote')) {
+				family = 'quote'
+			} else {
+				family = '--tbd'
+			}
+			return(family)
+		}
 	}
 
 	showTokens(){
@@ -107,6 +157,7 @@ export default class MyPlugin extends Plugin {
 		const view = this.app.workspace.activeLeaf.view;
 		if (view instanceof MarkdownView) {
 			const cm = view.sourceMode.cmEditor;
+			cm.execCommand('goLineStartSmart');
 			let cursorHead = cm.getCursor();
 			let line_base = cursorHead.line;
 			let line_limit = cm.lastLine();
@@ -142,6 +193,7 @@ export default class MyPlugin extends Plugin {
 		const view = this.app.workspace.activeLeaf.view;
 		if (view instanceof MarkdownView) {
 			const cm = view.sourceMode.cmEditor;
+			cm.execCommand('goLineStartSmart');
 			let cursorHead = cm.getCursor();
 			let line_base = cursorHead.line;
 			let line_limit = cm.firstLine();
@@ -187,6 +239,33 @@ export default class MyPlugin extends Plugin {
 				var_token = cm.getTokenTypeAt(cursorHead);
 			}
 			if (var_token == var_token_base) {
+				cm.setCursor(cursorHead);
+				this.flashLine();
+			} else {
+				cursorHead.line = line_base;
+				this.errorLine();
+			}
+		}
+	}
+
+	// gotoCousin is configured only for [n_item = +1 or -1]
+	// it may be extended later
+	gotoCousin(n_item: number) {
+		const view = this.app.workspace.activeLeaf.view;
+		if (view instanceof MarkdownView) {
+			const cm = view.sourceMode.cmEditor;
+			let line_limit
+			if (n_item > 0) { line_limit = cm.lastLine(); } else { line_limit = cm.firstLine(); };
+			let cursorHead = cm.getCursor();
+			let family_base = this.getFamily()
+			let line_base = cursorHead.line;
+			let family
+			while (family != family_base
+				&& this.gotoCheckLimit(cursorHead.line, n_item, line_limit)) {
+				cursorHead.line += n_item;
+				family = this.getFamily()
+			}
+			if (family == family_base) {
 				cm.setCursor(cursorHead);
 				this.flashLine();
 			} else {
