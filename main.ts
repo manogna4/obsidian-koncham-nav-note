@@ -14,7 +14,7 @@ export default class MyPlugin extends Plugin {
 	settings: MyPluginSettings;
 
 	async onload() {
-		console.log('loading plugin [' + plugin_name + ']');
+		console.log('loading plugin: ' + plugin_name);
 
 		this.addCommand({
 			id: 'goto-sibling-prev',
@@ -336,7 +336,7 @@ export default class MyPlugin extends Plugin {
 	}
 
 	onunload() {
-		console.log('unloading plugin [' + plugin_name + ']');
+		console.log('unloading plugin :' + plugin_name);
 	}
 
 }
