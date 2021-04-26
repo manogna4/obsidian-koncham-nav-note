@@ -1,17 +1,12 @@
-import { App, Modal, Notice, Plugin, PluginSettingTab, Setting, MarkdownView } from 'obsidian';
+import { App, Notice, Plugin, MarkdownView, FuzzySuggestModal } from 'obsidian';
 
 const plugin_name = 'koncham-nav-note'
 
-interface MyPluginSettings {
-	mySetting: string;
-}
-
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
-}
-
 export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+
+	onunload() {
+		console.log('unloading plugin :' + plugin_name);
+	}
 
 	async onload() {
 		console.log('loading plugin: ' + plugin_name);
@@ -80,6 +75,13 @@ export default class MyPlugin extends Plugin {
 			id: 'goto-cousin-prev',
 			name: 'goto cousin: prev',
 			callback: () => this.gotoCousin(-1),
+		});
+
+		this.addCommand({
+			id: 'switch-headings',
+			name: 'switche headings',
+			hotkeys: [{ "modifiers": [], "key": "F21" }],
+			callback: () => this.getHeadingsNote(),
 		});
 	}
 
@@ -335,8 +337,65 @@ export default class MyPlugin extends Plugin {
 		return line_limit;
 	}
 
-	onunload() {
-		console.log('unloading plugin :' + plugin_name);
+	getHeadingsNote(){
+		let file = this.app.workspace.getActiveFile();
+		let file_cache = this.app.metadataCache.getFileCache(file);
+		let heading_cache = file_cache.headings
+		// console.log(heading_cache);
+		let heading_data_interface = []
+		for (const [key, value] of Object.entries(heading_cache)) {
+			heading_data_interface.push({
+				title: value.heading,
+				level: value.level,
+				line: value.position.start.line,
+				start: value.position.start.col
+			})
+		}
+		console.log(heading_data_interface)
+		console.log(heading_data_interface[0])
+		console.log(heading_data_interface[1])
+		console.log(heading_data_interface[2])
+
+		let n = 0
+		for (const [key, value] of Object.entries(heading_data_interface)) {
+			
+		}
+		
+		
 	}
 
 }
+
+interface headingItem {
+	title: string;
+	level: number;
+	line: number;
+	start?: number;
+}
+
+// class headingSwitchModal extends FuzzySuggestModal<headingItem> {
+// 	app: App;
+// 	items: headingItem[];
+
+// 	constructor(app: App, items: headingItem[]) {
+// 		super(app);
+// 		this.app = app;
+// 		this.items = items;
+// 	}
+
+// 	getItems(): headingItem[] {
+// 		return this.items;
+// 	}
+
+// 	getItemText(item: headingItem): string {
+// 		return item.level + " -- " + item.title;
+// 	}
+
+// 	onChooseItem(item: headingItem, evt: MouseEvent | KeyboardEvent): void {
+// 		let view = this.app.workspace.activeLeaf.view
+// 		if (view instanceof MarkdownView) {
+// 			let editor = view.editor
+// 			editor.setSelection({ line: item.line, ch: item.start + 1 })
+// 		}
+// 	}
+// }
