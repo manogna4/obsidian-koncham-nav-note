@@ -2,6 +2,14 @@ import { App, Notice, Plugin, MarkdownView, FuzzySuggestModal } from 'obsidian';
 
 const plugin_name = 'koncham-nav-note'
 
+interface headingItem {
+	title: string;
+	name_full: string;
+	level: number;
+	line: number;
+	start?: number;
+}
+
 export default class MyPlugin extends Plugin {
 
 	onunload() {
@@ -78,10 +86,26 @@ export default class MyPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: 'switch-headings',
-			name: 'switche headings',
+			id: 'log-headings',
+			name: 'log headings',
 			hotkeys: [{ "modifiers": [], "key": "F21" }],
 			callback: () => this.getHeadingsNote(),
+		});
+
+		this.addCommand({
+			id: 'switch-heading',
+			name: 'Open Heading Switcher',
+			hotkeys: [{ "modifiers": [], "key": "F22" }],
+			checkCallback: (checking: boolean) => {
+				let leaf = this.app.workspace.activeLeaf;
+				if (leaf) {
+					if (!checking) {
+						new headingSwitchModal(this.app, this.getHeadingsNote()).open();
+					}
+					return true;
+				}
+				return false;
+			}
 		});
 	}
 
@@ -205,7 +229,6 @@ export default class MyPlugin extends Plugin {
 				let token1 = cm.getTokenTypeAt(cursorHead)
 				cursorHead.line -= 1
 				let token2 = cm.getTokenTypeAt(cursorHead)
-				// console.log(token1, token2);
 				if (token1 !== undefined && token2 === undefined){
 					result = true;
 				} else if (cursorHead.line < line_limit) {
@@ -341,61 +364,60 @@ export default class MyPlugin extends Plugin {
 		let file = this.app.workspace.getActiveFile();
 		let file_cache = this.app.metadataCache.getFileCache(file);
 		let heading_cache = file_cache.headings
-		// console.log(heading_cache);
+		console.log(heading_cache)
 		let heading_data_interface = []
+		let heading_context: string[]
+		heading_context = []
 		for (const [key, value] of Object.entries(heading_cache)) {
+			heading_context = process_heading(heading_context, value.level, value.heading)
+			let name_full = heading_context.reverse().join(' < ')
 			heading_data_interface.push({
 				title: value.heading,
 				level: value.level,
+				name_full: name_full,
 				line: value.position.start.line,
 				start: value.position.start.col
 			})
-		}
-		console.log(heading_data_interface)
-		console.log(heading_data_interface[0])
-		console.log(heading_data_interface[1])
-		console.log(heading_data_interface[2])
 
-		let n = 0
-		for (const [key, value] of Object.entries(heading_data_interface)) {
-			
+			function process_heading(heading_context: string[], level: number, title: string){
+				heading_context[level-1] = title
+				heading_context = heading_context.slice(0,level)
+				return heading_context
+			}
 		}
-		
-		
+		// console.log('final: ', heading_data_interface)
+		return heading_data_interface
 	}
 
 }
 
-interface headingItem {
-	title: string;
-	level: number;
-	line: number;
-	start?: number;
+
+
+class headingSwitchModal extends FuzzySuggestModal<headingItem> {
+	app: App;
+	items: headingItem[];
+
+	constructor(app: App, items: headingItem[]) {
+		super(app);
+		this.app = app;
+		this.items = items;
+	}
+
+	getItems(): headingItem[] {
+		return this.items;
+	}
+
+	getItemText(item: headingItem): string {
+		let level_indicator = "  "
+		return level_indicator.repeat(item.level) + item.name_full;
+	}
+
+	onChooseItem(item: headingItem, evt: MouseEvent | KeyboardEvent): void {
+		// let view = this.app.workspace.activeLeaf.view
+		// if (view instanceof MarkdownView) {
+		// 	let editor = view.editor
+		// 	editor.setSelection({ line: item.line, ch: item.start + 1 })
+		// }
+		console.log(item.name_full)
+	}
 }
-
-// class headingSwitchModal extends FuzzySuggestModal<headingItem> {
-// 	app: App;
-// 	items: headingItem[];
-
-// 	constructor(app: App, items: headingItem[]) {
-// 		super(app);
-// 		this.app = app;
-// 		this.items = items;
-// 	}
-
-// 	getItems(): headingItem[] {
-// 		return this.items;
-// 	}
-
-// 	getItemText(item: headingItem): string {
-// 		return item.level + " -- " + item.title;
-// 	}
-
-// 	onChooseItem(item: headingItem, evt: MouseEvent | KeyboardEvent): void {
-// 		let view = this.app.workspace.activeLeaf.view
-// 		if (view instanceof MarkdownView) {
-// 			let editor = view.editor
-// 			editor.setSelection({ line: item.line, ch: item.start + 1 })
-// 		}
-// 	}
-// }
