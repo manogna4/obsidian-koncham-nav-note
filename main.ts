@@ -370,7 +370,7 @@ export default class MyPlugin extends Plugin {
 		heading_context = []
 		for (const [key, value] of Object.entries(heading_cache)) {
 			heading_context = process_heading(heading_context, value.level, value.heading)
-			let name_full = heading_context.reverse().join(' < ')
+			let name_full = heading_context.slice().reverse().join('  <  ')
 			heading_data_interface.push({
 				title: value.heading,
 				level: value.level,
@@ -408,12 +408,12 @@ class headingSwitchModal extends FuzzySuggestModal<headingItem> {
 	}
 
 	getItemText(item: headingItem): string {
-		let level_indicator = "  "
+		let level_indicator = "    "
 		return level_indicator.repeat(item.level) + item.name_full;
 	}
 
 	onChooseItem(item: headingItem, evt: MouseEvent | KeyboardEvent): void {
-		// let view = this.app.workspace.activeLeaf.view
+		let view = this.app.workspace.activeLeaf.view
 		// if (view instanceof MarkdownView) {
 		// 	let editor = view.editor
 		// 	editor.setSelection({ line: item.line, ch: item.start + 1 })
