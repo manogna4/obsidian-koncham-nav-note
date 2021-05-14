@@ -409,7 +409,7 @@ class headingSwitchModal extends FuzzySuggestModal<headingItem> {
 
 	getItemText(item: headingItem): string {
 		let level_indicator = "    "
-		return level_indicator.repeat(item.level) + item.name_full;
+		return item.level + 'HH' + level_indicator.repeat(item.level) + item.name_full;
 	}
 
 	onChooseItem(item: headingItem, evt: MouseEvent | KeyboardEvent): void {
